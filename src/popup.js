@@ -1,5 +1,5 @@
 // this script runs on the popup html
-import Messages from '../src/modules/api-services/Messages';
+import Messages from './services/Messages';
 import '../src/assets/scss/popup.scss';
 
 document.getElementById('login-form').addEventListener('submit', () => {

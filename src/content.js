@@ -1,5 +1,5 @@
 // this script interacts with the DOM
-import Messages from '../src/modules/api-services/Messages';
+import Messages from '../src/services/Messages';
 
 let message = {
     action: Messages.ACTIONS.GIT,

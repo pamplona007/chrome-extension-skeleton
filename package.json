@@ -14,7 +14,6 @@
     "fs-extra": "8.1.0",
     "html-loader": "0.5.5",
     "html-webpack-plugin": "^5.3.1",
-    "json-server": "^0.16.3",
     "postcss": "^8.2.15",
     "postcss-loader": "^5.2.0",
     "sass": "^1.32.13",

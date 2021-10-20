@@ -74,7 +74,7 @@ const options = {
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: 'src/manifest.json',
+          from: 'public/manifest.json',
           transform: function (content) {
             // generates the manifest file using the package.json informations
             const localUrl = 'http://localhost:' + env.PORT;
@@ -102,12 +102,12 @@ const options = {
       ]
     }),
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, "src", "html", "popup.html"),
+      template: path.join(__dirname, "public", "popup.html"),
       filename: "popup.html",
       chunks: ["popup"]
     }),
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, "src", "html", "options.html"),
+      template: path.join(__dirname, "public", "options.html"),
       filename: "options.html",
       chunks: ["options"]
     }),

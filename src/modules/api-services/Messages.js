@@ -2,8 +2,6 @@
 
 const Messages = {
 
-    addListener: chrome.runtime.onMessage.addListener,
-
     TARGETS: {
         BACKGROUND: 'background',
         CONTENT: 'content',

@@ -1,6 +1,6 @@
 // this script runs on the popup html
-import Message from './modules/api-services/Messages';
-import '../css/popup.css';
+import Messages from '../src/modules/api-services/Messages';
+import '../src/assets/scss/popup.scss';
 
 document.getElementById('login-form').addEventListener('submit', () => {
     callIdentityApi();
@@ -13,11 +13,11 @@ const callIdentityApi = () => {
     }
 
     let message = {
-        action: Message.ACTIONS.LOGIN,
+        action: Messages.ACTIONS.LOGIN,
         message: requestBody
     };
 
-    Message.send(Message.TARGETS.BACKGROUND, message)
+    Messages.send(Messages.TARGETS.BACKGROUND, message)
         .then(response => {
             console.log(response);
         })

@@ -1,54 +1,66 @@
-var webpack = require("webpack"),
-    path = require("path"),
-    fileSystem = require("fs"),
-    env = require("./utils/env"),
-    CleanWebpackPlugin = require("clean-webpack-plugin").CleanWebpackPlugin,
-    CopyWebpackPlugin = require("copy-webpack-plugin"),
-    HtmlWebpackPlugin = require("html-webpack-plugin"),
-    WriteFilePlugin = require("write-file-webpack-plugin");
+const path = require('path');
+const fileSystem = require('fs');
+const CleanWebpackPlugin = require('clean-webpack-plugin').CleanWebpackPlugin;
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const env = require('./utils/env');
 
-// load the secrets
-var alias = {};
+let alias = {};
 
-var secretsPath = path.join(__dirname, ("secrets." + env.NODE_ENV + ".js"));
-
-var fileExtensions = ["jpg", "jpeg", "png", "gif", "eot", "otf", "svg", "ttf", "woff", "woff2"];
+const secretsPath = path.join(__dirname, ('secrets.' + env.NODE_ENV + '.js'));
+const fileExtensions = ['jpg', 'jpeg', 'png', 'gif', 'eot', 'otf', 'ttf', 'woff', 'woff2', 'svg'];
 
 if (fileSystem.existsSync(secretsPath)) {
-  alias["secrets"] = secretsPath;
+  alias['secrets'] = secretsPath;
 }
 
-var options = {
+const options = {
   mode: process.env.NODE_ENV || "development",
   entry: {
-    content: path.join(__dirname, "src", "js", "content.js"),
-    popup: path.join(__dirname, "src", "js", "popup.js"),
-    options: path.join(__dirname, "src", "js", "options.js"),
-    background: path.join(__dirname, "src", "js", "background.js")
+    content: path.join(__dirname, 'public', 'content.js'),
+    popup: path.join(__dirname, 'public', 'popup.js'),
+    options: path.join(__dirname, 'public', 'options.js'),
+    background: path.join(__dirname, 'public', 'background.js'),
   },
-  chromeExtensionBoilerplate: {
-    notHotReload: ["content"]
-  },
+  noHotReload: [
+    'content'
+  ],
   output: {
-    path: path.join(__dirname, "build"),
-    filename: "[name].bundle.js"
+    publicPath: 'http://localhost:' + env.PORT + '/',
+    path: path.join(__dirname, 'build'),
+    filename: '[name].js'
   },
   module: {
     rules: [
       {
+        test: /\.(scss)$/,
+        use: [{
+          // inject CSS to page
+          loader: 'style-loader'
+        }, {
+          // translates CSS into CommonJS modules
+          loader: 'css-loader'
+        }, {
+          // compiles Sass to CSS
+          loader: 'sass-loader'
+        }]
+      },
+      {
         test: /\.css$/,
-        loader: "style-loader!css-loader",
-        exclude: /node_modules/
+        use: ['style-loader', 'css-loader'],
       },
       {
         test: new RegExp('.(' + fileExtensions.join('|') + ')$'),
-        loader: "file-loader?name=[name].[ext]",
-        exclude: /node_modules/
+        use: {
+          loader: 'file-loader?name=[name].[ext]',
+          options: {
+            esModule: false
+          }
+        },
       },
       {
         test: /\.html$/,
-        loader: "html-loader",
-        exclude: /node_modules/
+        use: ['html-loader'],
       }
     ]
   },
@@ -59,39 +71,51 @@ var options = {
     // clean the build folder
     new CleanWebpackPlugin(),
     // expose and write the allowed env vars on the compiled bundle
-    new webpack.EnvironmentPlugin(["NODE_ENV"]),
-    new CopyWebpackPlugin([{
-      from: "src/manifest.json",
-      transform: function (content, path) {
-        // generates the manifest file using the package.json informations
-        return Buffer.from(JSON.stringify({
-          description: process.env.npm_package_description,
-          version: process.env.npm_package_version,
-          ...JSON.parse(content.toString())
-        }))
-      }
-    }]),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: 'src/manifest.json',
+          transform: function (content) {
+            // generates the manifest file using the package.json informations
+            const localUrl = 'http://localhost:' + env.PORT;
+            const originalJson = JSON.parse(content.toString());
+
+            if ('development' === env.NODE_ENV) {
+              originalJson.content_security_policy = `script-src 'self' ${localUrl} 'unsafe-eval'; object-src 'self'`;
+            }
+
+            return Buffer.from(JSON.stringify({
+              description: process.env.npm_package_description,
+              version: process.env.npm_package_version,
+              ...originalJson
+            }));
+          }
+        },
+        {
+          from: 'src/_locales',
+          to: '_locales'
+        },
+        {
+          from: 'src/assets/img',
+          to: 'img'
+        }
+      ]
+    }),
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, "src", "popup.html"),
+      template: path.join(__dirname, "src", "html", "popup.html"),
       filename: "popup.html",
       chunks: ["popup"]
     }),
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, "src", "options.html"),
+      template: path.join(__dirname, "src", "html", "options.html"),
       filename: "options.html",
       chunks: ["options"]
     }),
-    new HtmlWebpackPlugin({
-      template: path.join(__dirname, "src", "background.html"),
-      filename: "background.html",
-      chunks: ["background"]
-    }),
-    new WriteFilePlugin()
   ]
 };
 
 if (env.NODE_ENV === "development") {
-  options.devtool = "cheap-module-eval-source-map";
+  options.devtool = "eval-source-map";
 }
 
 module.exports = options;

@@ -1,0 +1,10 @@
+{
+    "extName": {
+        "message": "Chrome Extension Scheleton",
+        "description": "Extension name"
+    },
+    "extDescription": {
+        "message": "A baseline extension to use as a building block to make your own extension",
+        "description": "Extension description"
+    }
+}

@@ -1,18 +1,22 @@
 {
     "manifest_version": 2,
-    "name": "Mecaplanning Extension",
+    "name": "__MSG_extName__",
+    "description": "__MSG_extDescription__",
     "version": "0.1",
     "options_page": "options.html",
     "background": {
-        "page": "background.html"
+        "scripts": ["background.js"]
     },
     "content_scripts": [
         {
             "matches": ["*://*/*"],
-            "js": ["content.bundle.js"],
+            "js": ["content.js"],
             "run_at": "document_end"
         }
     ],
+    "icons": {
+        "32": "img/32.png"
+    },
     "browser_action": {
         "default_popup": "popup.html"
     },
@@ -21,5 +25,6 @@
         "tabs",
         "*://*/*"
     ],
-    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+    "default_locale": "en"
 }

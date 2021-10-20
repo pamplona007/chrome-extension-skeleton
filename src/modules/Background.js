@@ -1,5 +1,5 @@
 
-export const handleMessage = {
+export const messageActions = {
 
     logMessage: (request, sender, sendResponse) => {
         console.log(request.message);
@@ -25,7 +25,7 @@ export const handleMessage = {
 }
 
 const Background = {
-    handleMessage: handleMessage,
+    messageActions,
 }
 
 export default Background;

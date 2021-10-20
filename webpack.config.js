@@ -17,10 +17,10 @@ if (fileSystem.existsSync(secretsPath)) {
 const options = {
   mode: process.env.NODE_ENV || "development",
   entry: {
-    content: path.join(__dirname, 'public', 'content.js'),
-    popup: path.join(__dirname, 'public', 'popup.js'),
-    options: path.join(__dirname, 'public', 'options.js'),
-    background: path.join(__dirname, 'public', 'background.js'),
+    content: path.join(__dirname, 'src', 'content.js'),
+    popup: path.join(__dirname, 'src', 'popup.js'),
+    options: path.join(__dirname, 'src', 'options.js'),
+    background: path.join(__dirname, 'src', 'background.js'),
   },
   noHotReload: [
     'content'

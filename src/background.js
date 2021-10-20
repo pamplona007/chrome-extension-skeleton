@@ -1,5 +1,5 @@
 // this script does NOT interact with the DOM
-import Messages from '../src/modules/api-services/Messages';
+import Messages from '../src/services/Messages';
 import { messageActions } from '../src/modules/Background';
 
 const handleMessage = async (request, sender, sendResponse) => {
